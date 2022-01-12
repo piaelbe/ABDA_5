@@ -6,8 +6,6 @@ data {
 }
 
 parameters {
-//  real<lower=0,upper=1> theta[P];
-//  real<lower=0> logy[J];
   real mu;
   real<lower=0> tau;
   vector[P] beta;                 // Vector of group intercepts.
@@ -29,14 +27,7 @@ model {
    // Population model and likelihood.
   for (j in 1:J) {
     y[j] ~ normal(beta[g[j]], sigma); //different beta for each participant
-    // beta ~ normal(mu, tau); //distribution for group of participants
-    // for (i in 1:J) { 
-    //    y[i] ~ normal(theta[ind[i]], sigma);
-    // }
-    //  for (j in 1:P) {
-    //    theta[j] ~ normal(mu,tau);
-    //  }
-    //  mu ~ uniform(-10000,10000);
+
   }
 }
 
