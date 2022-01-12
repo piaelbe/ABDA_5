@@ -1,0 +1,46 @@
+data {
+  int<lower=0> J; //observations
+  int<lower=0> P; //participants
+  vector[J] y;                    // Vector of observations.
+  int<lower = 1, upper = P> g[J]; // Vector of group assignments. 
+}
+
+parameters {
+//  real<lower=0,upper=1> theta[P];
+//  real<lower=0> logy[J];
+  real mu;
+  real<lower=0> tau;
+  vector[P] beta;                 // Vector of group intercepts.
+  real<lower=0> sigma;
+}
+
+model { 
+  // Hyperpriors.
+  mu ~ normal(0, 5);
+  tau ~ normal(0, 5);
+  
+    // Prior.
+  sigma ~ normal(0, 5);
+ 
+  for (j in 1:P) {
+    beta[j] ~ normal(mu, tau);
+  }
+
+   // Population model and likelihood.
+  for (j in 1:J) {
+    y[j] ~ normal(beta[g[j]], sigma); //different beta for each participant
+    // beta ~ normal(mu, tau); //distribution for group of participants
+    // for (i in 1:J) { 
+    //    y[i] ~ normal(theta[ind[i]], sigma);
+    // }
+    //  for (j in 1:P) {
+    //    theta[j] ~ normal(mu,tau);
+    //  }
+    //  mu ~ uniform(-10000,10000);
+  }
+}
+
+generated quantities {
+  real beta_predicted = normal_rng(mu, tau);
+  real logy_predicted = normal_rng(beta_predicted,sigma);
+}
